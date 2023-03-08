@@ -18,12 +18,12 @@ def main():
 
     # Load the packages onto the trucks by passing in the hashtable and the truck object.  The function will return
     # the updated hash table and the truck object with the packages loaded.
-    truck1.set_truck_capacity(10)
-    truck2.set_truck_capacity(10)
+    truck1.set_truck_capacity(16)
+    truck2.set_truck_capacity(16)
     truck2.add_truck_time(4000)
 
-    package_hash_table, truck1 = package_loader(package_hash_table, truck1, True)
-    package_hash_table, truck2 = package_loader(package_hash_table, truck2, True)
+    package_hash_table, truck1 = package_loader(package_hash_table, truck1)
+    package_hash_table, truck2 = package_loader(package_hash_table, truck2)
 
     total_packages_delivered = truck1.get_parcel_count() + truck2.get_parcel_count()
     print("First Truck Load 1: " + str(truck1.get_parcel_count()))
@@ -36,8 +36,8 @@ def main():
     # Load more packages onto the trucks
     truck1.set_truck_capacity(16)
     truck2.set_truck_capacity(16)
-    package_hash_table, truck1 = package_loader(package_hash_table, truck1, False)
-    package_hash_table, truck2 = package_loader(package_hash_table, truck2, False)
+    package_hash_table, truck1 = package_loader(package_hash_table, truck1)
+    package_hash_table, truck2 = package_loader(package_hash_table, truck2)
 
     print("First Truck Load 2: " + str(truck1.get_parcel_count()))
     print("Second Truck Load 2: " + str(truck2.get_parcel_count()))
@@ -59,8 +59,9 @@ def main():
     for bucket in package_hash_table.get_table():
         if bucket is not None:
             for parcel in bucket:
-                print(str(tc.seconds_to_time(int(parcel.get_delivery_time()))) + ' ' + str(
-                    parcel.get_delivery_deadline()))
+                print(str(str(parcel.get_package_id()) + ' - ' + str(tc.seconds_to_time(int(parcel.get_delivery_time()))) + ' '
+                      + str(parcel.get_delivery_deadline())) + ' - ' + str(parcel.get_group()) + ' ~ '
+                      + str(parcel.get_truck_id()))
 
 
 if __name__ == '__main__':

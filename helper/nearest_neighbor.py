@@ -1,16 +1,16 @@
 import helper.data_handler as dh
 
 
-def nearest_neighbor_sort(parcel_list):
+def nearest_neighbor_sort(parcel_list, start_address):
     """
     Sorts a list of parcels by nearest neighbor. Starting at the hub, the nearest neighbor is found and added to
     the list.
 
     :param parcel_list: A list of parcels
+    :param start_address: The starting address
     :return: The sorted list of parcels
     """
-    # Create the distance hash table
-    current_location = '4001 S 700 E'
+    current_location = start_address
     # Create the distance hash table
     distance_to_nearest = 99999999999999999
     distances_table = dh.create_adj_matrix_from_csv('data/WGUPS Distance Table.csv')

@@ -24,10 +24,18 @@ def deliver_parcels(hash_table, truck):
         truck.set_truck_location(delivered_parcel.get_address())
         # Update the package status
         hash_table.update(delivered_parcel.get_package_id(), 'Delivered', truck.get_truck_time())
-    # Send truck back to the hub
-    distance = distances[truck.get_truck_location()]['4001 S 700 E']
-    time_to_deliver = distance * seconds_per_mile
-    truck.add_truck_time(time_to_deliver)
-    truck.add_truck_distance(distance)
-    truck.set_truck_location('4001 S 700 E')
+    # Send truck back to the hub if there are more deliveries
+    more_deliveries = False
+    for bucket in hash_table.get_table():
+        for package in bucket:
+            if package.get_status() == 'At Hub':
+                more_deliveries = True
+                break
+
+    if more_deliveries:
+        distance = distances[truck.get_truck_location()]['4001 S 700 E']
+        time_to_deliver = distance * seconds_per_mile
+        truck.add_truck_time(time_to_deliver)
+        truck.add_truck_distance(distance)
+        truck.set_truck_location('4001 S 700 E')
     return hash_table, truck
