@@ -15,25 +15,44 @@ def package_loader(hash_table, truck):
     # Sort deliverable packages by nearest neighbor
     deliverable = nn.nearest_neighbor_sort(deliverable, truck.get_truck_location())
 
+    truck_priority_payload = []
     # Load the priority packages onto the truck
     for parcel in priority_deliverable:
-        if len(truck.get_truck_parcels()) < truck.get_truck_capacity():
+        if len(truck_priority_payload) <= truck.get_truck_priority_slots():
             # Update the package truck ID
             parcel.set_truck_id(truck.get_truck_id())
             # Load the package onto the truck
-            truck.add_parcel(parcel)
+            truck_priority_payload.append(parcel)
             group = parcel.get_group()
-            if len(group) > 0:
+            if len(group) > 0 & truck.get_truck_capacity() - len(truck_priority_payload) >= len(group):
                 for item in group:
-                    truck.add_parcel(item)
+                    truck_priority_payload.append(item)
+            else:
+                truck_priority_payload.remove(parcel)
 
+    # Load the non-priority packages onto the truck
+    priority_count = len(truck_priority_payload)
+    truck_bulk_payload = []
     for parcel in deliverable:
-        if len(truck.get_truck_parcels()) < truck.get_truck_capacity():
-
+        if (len(truck_bulk_payload) + priority_count) < truck.get_truck_capacity():
             # Update the package truck ID
             parcel.set_truck_id(truck.get_truck_id())
             # Load the package onto the truck
-            truck.add_parcel(parcel)
+            truck_bulk_payload.append(parcel)
+
+    # Sort the payloads by nearest neighbor
+    truck_priority_payload = nn.nearest_neighbor_sort(truck_priority_payload, truck.get_truck_location())
+    if len(truck_priority_payload) > 0:
+        truck_bulk_payload = nn.nearest_neighbor_sort(truck_bulk_payload, truck_priority_payload[-1].get_address())
+    else:
+        truck_bulk_payload = nn.nearest_neighbor_sort(truck_bulk_payload, truck.get_truck_location())
+
+    # Combine the priority and bulk payloads
+    truck_payload = truck_priority_payload + truck_bulk_payload
+    # Add the payload to the truck
+    for parcel in truck_payload:
+        truck.add_parcel(parcel)
+
     return hash_table, truck
 
 

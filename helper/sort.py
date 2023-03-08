@@ -28,10 +28,10 @@ def set_conditional_flags(package_hash_table):
 def set_grouping(package_hash_table):
     """
     Sets the grouping for the packages. Search the notes for the words 'Must be delivered with' when it finds an
-    entry with the criteria it takes the integers from the notes string and adds them to the parcel's grouping list.
-    If the parcel doesn't have a grouping, set its grouping to an empty list.
+    entry with the criteria it takes the parcel ids from the notes string and adds the corresponding parcels to the
+    parcel's grouping list. If the parcel doesn't have a grouping, set its grouping to an empty list.
 
-    Time complexity: O(n), where n is the number of parcels in the hash table.
+    Time complexity: O(n^2), where n is the number of parcels in the hash table.
 
     :param package_hash_table: The hash table of parcels
     :return: The updated hash table of parcels with grouping set
@@ -40,8 +40,11 @@ def set_grouping(package_hash_table):
         for parcel in bucket:
             notes = parcel.get_notes()
             if 'Must be delivered with' in notes:
-                # Extract the integers from the notes string
-                grouping = [int(s) for s in re.findall(r'\d+', notes)]
+                # Extract the parcel ids from the notes string
+                parcel_ids = [int(s) for s in re.findall(r'\d+', notes)]
+
+                # Find the parcels with the corresponding ids and add them to the grouping list
+                grouping = [package_hash_table.search(parcel_id) for parcel_id in parcel_ids]
 
                 # Add the grouping to the parcel
                 parcel.set_group(grouping)
@@ -49,6 +52,7 @@ def set_grouping(package_hash_table):
                 # If the parcel doesn't have a grouping, set its grouping to an empty list
                 parcel.set_group([])
     return package_hash_table
+
 
 
 def set_truck(package_hash_table):

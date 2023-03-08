@@ -20,6 +20,8 @@ def main():
     # the updated hash table and the truck object with the packages loaded.
     truck1.set_truck_capacity(16)
     truck2.set_truck_capacity(16)
+    truck1.set_truck_priority_slots(16)
+    truck2.set_truck_priority_slots(16)
     truck2.add_truck_time(4000)
 
     package_hash_table, truck1 = package_loader(package_hash_table, truck1)
