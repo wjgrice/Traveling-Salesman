@@ -2,6 +2,7 @@ import helper.data_handler as dh
 import helper.delivery as dl
 import helper.time_converter as tc
 from helper.package_handler import package_loader
+from helper.package_handler import express_loader
 from helper.sort import set_conditional_flags
 from model.truck import Truck
 
@@ -16,18 +17,28 @@ def main():
     truck1 = Truck(1)
     truck2 = Truck(2)
 
+
+    # Load the trouble-some packages express packages onto a truck for delivery
+    package_hash_table, truck1 = express_loader(package_hash_table, truck1)
+
+    total_packages_delivered = truck1.get_parcel_count()
+
+    package_hash_table, truck1 = dl.deliver_parcels(package_hash_table, truck1)
+    print("Express Packages Delivered: " + str(truck1.get_parcel_count()))
+    print("--------------------")
+
     # Load the packages onto the trucks by passing in the hashtable and the truck object.  The function will return
     # the updated hash table and the truck object with the packages loaded.
     truck1.set_truck_capacity(16)
     truck2.set_truck_capacity(16)
     truck1.set_truck_priority_slots(16)
     truck2.set_truck_priority_slots(16)
-    truck2.add_truck_time(4000)
+    # truck2.add_truck_time(4000)
 
     package_hash_table, truck1 = package_loader(package_hash_table, truck1)
     package_hash_table, truck2 = package_loader(package_hash_table, truck2)
 
-    total_packages_delivered = truck1.get_parcel_count() + truck2.get_parcel_count()
+    total_packages_delivered += truck1.get_parcel_count() + truck2.get_parcel_count()
     print("First Truck Load 1: " + str(truck1.get_parcel_count()))
     print("Second Truck Load 1: " + str(truck2.get_parcel_count()))
 

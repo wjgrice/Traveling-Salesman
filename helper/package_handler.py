@@ -11,9 +11,9 @@ def package_loader(hash_table, truck):
     deliverable = deliverable_packages(hash_table, truck)
 
     # sort the priority packages by nearest neighbor
-    priority_deliverable = nn.nearest_neighbor_sort(priority_deliverable, truck.get_truck_location())
+    priority_deliverable = nn.two_opt_sort(priority_deliverable, truck.get_truck_location())
     # Sort deliverable packages by nearest neighbor
-    deliverable = nn.nearest_neighbor_sort(deliverable, truck.get_truck_location())
+    deliverable = nn.two_opt_sort(deliverable, truck.get_truck_location())
 
     truck_priority_payload = []
     # Load the priority packages onto the truck
@@ -41,17 +41,18 @@ def package_loader(hash_table, truck):
             truck_bulk_payload.append(parcel)
 
     # Sort the payloads by nearest neighbor
-    truck_priority_payload = nn.nearest_neighbor_sort(truck_priority_payload, truck.get_truck_location())
+    truck_priority_payload = nn.two_opt_sort(truck_priority_payload, truck.get_truck_location())
     if len(truck_priority_payload) > 0:
-        truck_bulk_payload = nn.nearest_neighbor_sort(truck_bulk_payload, truck_priority_payload[-1].get_address())
+        truck_bulk_payload = nn.two_opt_sort(truck_bulk_payload, truck_priority_payload[-1].get_address())
     else:
-        truck_bulk_payload = nn.nearest_neighbor_sort(truck_bulk_payload, truck.get_truck_location())
+        truck_bulk_payload = nn.two_opt_sort(truck_bulk_payload, truck.get_truck_location())
 
     # Combine the priority and bulk payloads
     truck_payload = truck_priority_payload + truck_bulk_payload
     # Add the payload to the truck
     for parcel in truck_payload:
         truck.add_parcel(parcel)
+        hash_table.update(parcel.get_package_id(), "En Route", truck.get_truck_time())
 
     return hash_table, truck
 
@@ -98,3 +99,19 @@ def priority_packages(hash_table, truck):
                         if parcel_loading_time <= truck_time:
                             deliverable.append(parcel)
     return deliverable
+
+
+def express_loader(hash_table, truck):
+    """Loads express packages onto the truck."""
+    hash_table.update(15, "En Route", truck.get_truck_time())
+    hash_table.update(6, "En Route", truck.get_truck_time())
+    hash_table.update(30, "En Route", truck.get_truck_time())
+    hash_table.update(13, "En Route", truck.get_truck_time())
+    hash_table.update(31, "En Route", truck.get_truck_time())
+    hash_table.update(40, "En Route", truck.get_truck_time())
+    truck_payload = [hash_table.search(15), hash_table.search(6), hash_table.search(30), hash_table.search(13),
+                     hash_table.search(31), hash_table.search(40)]
+    truck_payload = nn.two_opt_sort(truck_payload, truck.get_truck_location())
+    for parcel in truck_payload:
+        truck.add_parcel(parcel)
+    return hash_table, truck
