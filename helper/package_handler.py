@@ -1,5 +1,5 @@
 import helper.time_converter as tc
-import helper.nearest_neighbor as nn
+import helper.route_optimizer as nn
 
 
 def package_loader(hash_table, truck):
@@ -10,35 +10,38 @@ def package_loader(hash_table, truck):
     # Get the list of non-priority deliverable packages
     deliverable = deliverable_packages(hash_table, truck)
 
-    # sort the priority packages by nearest neighbor
+    # sort the priority packages by two-opt
     priority_deliverable = nn.two_opt_sort(priority_deliverable, truck.get_truck_location())
-    # Sort deliverable packages by nearest neighbor
+    # Sort deliverable packages by two-opt
     deliverable = nn.two_opt_sort(deliverable, truck.get_truck_location())
 
     truck_priority_payload = []
     # Load the priority packages onto the truck
-    for parcel in priority_deliverable:
-        if len(truck_priority_payload) <= truck.get_truck_priority_slots():
-            # Update the package truck ID
-            parcel.set_truck_id(truck.get_truck_id())
-            # Load the package onto the truck
-            truck_priority_payload.append(parcel)
-            group = parcel.get_group()
-            if len(group) > 0 & truck.get_truck_capacity() - len(truck_priority_payload) >= len(group):
-                for item in group:
-                    truck_priority_payload.append(item)
-            else:
-                truck_priority_payload.remove(parcel)
+    if len(priority_deliverable) > 0:
+        for parcel in priority_deliverable:
+            if len(truck_priority_payload) <= truck.get_truck_priority_slots():
+                # Update the package truck ID
+                parcel.set_truck_id(truck.get_truck_id())
+                # Load the package onto the truck
+                truck_priority_payload.append(parcel)
+                group = parcel.get_group()
+                if len(group) > 0 & truck.get_truck_capacity() - len(truck_priority_payload) >= len(group):
+                    for item in group:
+                        truck_priority_payload.append(item)
+                else:
+                    truck_priority_payload.remove(parcel)
+
 
     # Load the non-priority packages onto the truck
-    priority_count = len(truck_priority_payload)
     truck_bulk_payload = []
-    for parcel in deliverable:
-        if (len(truck_bulk_payload) + priority_count) < truck.get_truck_capacity():
-            # Update the package truck ID
-            parcel.set_truck_id(truck.get_truck_id())
-            # Load the package onto the truck
-            truck_bulk_payload.append(parcel)
+    if len(deliverable) > 0 and len(truck_priority_payload) == 0:
+        for parcel in deliverable:
+            if (len(truck_bulk_payload)) < truck.get_truck_capacity():
+                # Update the package truck ID
+                parcel.set_truck_id(truck.get_truck_id())
+                # Load the package onto the truck
+                truck_bulk_payload.append(parcel)
+
 
     # Sort the payloads by nearest neighbor
     truck_priority_payload = nn.two_opt_sort(truck_priority_payload, truck.get_truck_location())

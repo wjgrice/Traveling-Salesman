@@ -1,7 +1,6 @@
 import csv
 from model.parcel import Parcel
 from model.parcel_hash import ParcelHash
-import helper.address_cleanup as ac
 
 
 def create_adj_matrix_from_csv(csv_file):
@@ -83,7 +82,7 @@ def create_parcel_hash_from_csv(file_path):
         for row in reader:
             # Extract the parcel information from the CSV row
             package_id = int(row[0])
-            address = ac.standardize_address(row[1])
+            address = row[1]
             city = row[2]
             state = row[3]
             zip_code = row[4]
