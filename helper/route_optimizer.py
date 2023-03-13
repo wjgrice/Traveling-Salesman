@@ -4,8 +4,8 @@ import random
 
 def two_opt_sort(parcel_list, start_address):
     """
-    Sorts a list of parcels using the 2-opt algorithm with a nearest neighbor tour as the initial tour. Starting at the hub,
-    the nearest neighbor is found and added to the list, and then the 2-opt algorithm is used to improve the tour.
+    Sorts a list of parcels using the 2-opt algorithm with a nearest neighbor route as the initial route. Starting at the hub,
+    the nearest neighbor is found and added to the list, and then the 2-opt algorithm is used to improve the route.
 
     :param parcel_list: A list of parcels
     :param start_address: The starting address
@@ -14,68 +14,65 @@ def two_opt_sort(parcel_list, start_address):
     # Create the distance hash table
     distances_table = dh.create_adj_matrix_from_csv('data/WGUPS Distance Table.csv')
 
-    # Run the nearest neighbor algorithm to get an initial tour
-    initial_tour = nearest_neighbor_sort(parcel_list, start_address)
+    # Run the nearest neighbor algorithm to get an initial route
+    initial_route = nearest_neighbor_sort(parcel_list, start_address)
 
-    # Run the 2-opt algorithm to improve the tour
-    improved_tour = two_opt(initial_tour, distances_table)
+    # Run the 2-opt algorithm to improve the route
+    improved_route = two_opt(initial_route, distances_table)
 
-    # Return the improved tour
-    return improved_tour
+    # Return the improved route
+    return improved_route
 
 
-def two_opt(tour, distances):
+def two_opt(route, distances):
     """
-    Implements the 2-opt algorithm to improve the tour.
+    Implements the 2-opt algorithm to improve the route.
 
-    :param tour: The tour to be improved
+    :param route: The route to be improved
     :param distances: A matrix of distances between the cities
-    :return: The improved tour
+    :return: The improved route
     """
-    n = len(tour)
+    n = len(route)
     while True:
         improvement = 0
         for i in range(1, n - 2):
             for j in range(i + 1, n):
                 if j - i == 1:
                     continue
-                new_tour = tour[:]
-                new_tour[i:j] = tour[j - 1:i - 1:-1]
-                new_distance = tour_distance(new_tour, distances)
-                if new_distance < tour_distance(tour, distances):
-                    tour = new_tour
+                new_route = route[:]
+                new_route[i:j] = route[j - 1:i - 1:-1]
+                new_distance = route_distance(new_route, distances)
+                if new_distance < route_distance(route, distances):
+                    route = new_route
                     improvement = 1
         if improvement == 0:
             break
-    return tour
+    return route
 
 
-def tour_distance(tour, distances):
+def route_distance(route, distances):
     """
-    Calculates the total distance of a tour.
+    Calculates the total distance of a route.
 
-    :param tour: The tour to calculate the distance of
+    :param route: The route to calculate the distance of
     :param distances: A matrix of distances between the cities
-    :return: The total distance of the tour
+    :return: The total distance of the route
     """
     total_distance = 0
-    for i in range(len(tour) - 1):
-        start_address = tour[i].get_address()
-        end_address = tour[i + 1].get_address()
+    for i in range(len(route) - 1):
+        start_address = route[i].get_address()
+        end_address = route[i + 1].get_address()
         if start_address in distances and end_address in distances[start_address]:
             total_distance += distances[start_address][end_address]
         else:
             print(f"Missing distance between addresses {start_address} and {end_address}")
-    start_address = tour[-1].get_address()
-    end_address = tour[0].get_address()
+    start_address = route[-1].get_address()
+    end_address = route[0].get_address()
     if start_address in distances and end_address in distances[start_address]:
         total_distance += distances[start_address][end_address]
     else:
         print(f"Missing distance between addresses {start_address} and {end_address}")
     return total_distance
-
-
-
 
 
 def nearest_neighbor_sort(parcel_list, start_address):

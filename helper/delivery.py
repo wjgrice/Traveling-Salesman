@@ -3,6 +3,10 @@ from helper import data_handler as dh
 
 def deliver_parcels(hash_table, truck):
     """Delivers the packages on the truck."""
+    for parcel in truck.get_truck_parcels():
+        hash_table.search_id(parcel.get_package_id()).set_status('En Route')
+        hash_table.search_id(parcel.get_package_id()).set_loading_time(truck.get_truck_time())
+
     # Define time/mph ratio
     seconds_per_mile = 3600 / truck.get_truck_speed()
     # Create distance matrix

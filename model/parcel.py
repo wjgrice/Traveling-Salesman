@@ -1,3 +1,5 @@
+import helper.time_converter as tc
+
 class Parcel:
     """
     Represents a parcel object with various attributes like package ID, delivery address, delivery city,
@@ -30,24 +32,15 @@ class Parcel:
         self.mass = mass
         self.notes = notes
         self.status = 'At the hub'
-        self.load_seq_num = -1
         self.loading_time = -1
         self.delivery_time = -1
-        self.truck_id = -1
-        self.group = []
-        self.priority = "None"
 
     def __str__(self):
         """Returns a string representation of the Parcel object."""
-        return f'{self.package_id} {self.address} {self.city} {self.state} {self.zip_code} {self.delivery_deadline} ' \
-               f'{self.mass} {self.notes} {self.status} {self.load_seq_num} {self.loading_time} {self.delivery_time} ' \
-               f'{self.truck_id} {self.group}'
-
-    def __repr__(self):
-        """Returns a string representation of the Parcel object suitable for the Python interpreter."""
-        return f'{self.package_id} {self.address} {self.city} {self.state} {self.zip_code} {self.delivery_deadline} ' \
-               f'{self.mass} {self.notes} {self.status} {self.load_seq_num} {self.loading_time} {self.delivery_time} ' \
-               f'{self.truck_id} {self.group}'
+        return f'Package ID:{self.package_id} / Address:{self.address}, {self.city}, {self.state}, ' \
+               f' {self.zip_code} / Weight:{self.mass} / Notes:{self.notes} / ' \
+               f'Status:{self.status} / Loading Time:{tc.seconds_to_time(int(self.loading_time))} / ' \
+               f' Delivery Time:{tc.seconds_to_time(int(self.delivery_time))}  / Deadline:{self.delivery_deadline} '
 
     def get_package_id(self) -> int:
         """Returns the package ID for the Parcel object."""
@@ -89,14 +82,6 @@ class Parcel:
         """Sets the status of the Parcel object to the given status."""
         self.status = status
 
-    def get_load_seq_num(self) -> int:
-        """Returns the load sequence number for the Parcel object."""
-        return self.load_seq_num
-
-    def set_load_seq_num(self, load_seq_num: int) -> None:
-        """Sets the load sequence number for the Parcel object to the given load sequence number."""
-        self.load_seq_num = load_seq_num
-
     def get_loading_time(self) -> int:
         """Returns the loading time for the Parcel object."""
         return self.loading_time
@@ -136,8 +121,3 @@ class Parcel:
     def set_priority(self, priority: str) -> None:
         """Sets the priority for the Parcel object to the given priority."""
         self.priority = priority
-
-
-
-
-

@@ -34,7 +34,7 @@ class ParcelHash:
         if self.num_parcels / self.table_size > self.load_factor:
             self._resize()
 
-    def search(self, key):
+    def search_id(self, key):
         """
         Searches for the parcel with the given key (package ID) in the hash table.
         If the parcel is found, the function returns it. Otherwise, it returns None.
@@ -43,6 +43,84 @@ class ParcelHash:
         for parcel in self.table[slot]:
             if parcel.get_package_id() == key:
                 return parcel
+        return None
+
+    def search_address(self, address):
+        """
+        Searches for the parcel with the given address in the hash table.
+        If the parcel is found, the function returns it. Otherwise, it returns None.
+        """
+        addresses = []
+        for slot in self.table:
+            for parcel in slot:
+                if parcel.get_address() == address:
+                    addresses.append(parcel)
+                    return addresses
+        return None
+
+    def search_deadline(self, deadline):
+        """
+        Searches for the parcel with the given deadline in the hash table.
+        If the parcel is found, the function returns it. Otherwise, it returns None.
+        """
+        deadlines = []
+        for slot in self.table:
+            for parcel in slot:
+                if parcel.get_delivery_deadline() == deadline:
+                    deadlines.append(parcel)
+                    return deadlines
+        return None
+
+    def search_city(self, city):
+        """
+        Searches for the parcel with the given city in the hash table.
+        If the parcel is found, the function returns it. Otherwise, it returns None.
+        """
+        cities = []
+        for slot in self.table:
+            for parcel in slot:
+                if parcel.get_city() == city:
+                    cities.append(parcel)
+                    return cities
+        return None
+
+    def search_zip(self, zip):
+        """
+        Searches for the parcel with the given zip code in the hash table.
+        If the parcel is found, the function returns it. Otherwise, it returns None.
+        """
+        zips = []
+        for slot in self.table:
+            for parcel in slot:
+                if parcel.get_zip() == zip:
+                    zips.append(parcel)
+                    return zips
+        return None
+
+    def search_weight(self, weight):
+        """
+        Searches for the parcel with the given weight in the hash table.
+        If the parcel is found, the function returns it. Otherwise, it returns None.
+        """
+        weights = []
+        for slot in self.table:
+            for parcel in slot:
+                if parcel.get_weight() == float(weight):
+                    weights.append(parcel)
+                    return weights
+        return None
+
+    def search_delivery_status(self, status):
+        """
+        Searches for the parcel with the given delivery status in the hash table.
+        If the parcel is found, the function returns it. Otherwise, it returns None.
+        """
+        statuses = []
+        for slot in self.table:
+            for parcel in slot:
+                if parcel.get_status() == status:
+                    statuses.append(parcel)
+                    return statuses
         return None
 
     def update(self, key, status, time):
