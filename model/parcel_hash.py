@@ -1,7 +1,9 @@
 import copy
 
+
 class ParcelHash:
     """Hash Table Data Structure implemented using a list of lists to store parcels"""
+
     def __init__(self, initial_size=10, load_factor=0.75):
         """
         Initializes an empty hash table with the given initial size (which is a prime number) and load factor.
@@ -63,11 +65,12 @@ class ParcelHash:
         """
         addresses = []
         for slot in self.table:
-            for parcel in slot:
-                if parcel.get_address() == address:
-                    addresses.append(parcel)
-            return addresses
-        return None
+            if slot is not None:
+                for parcel in slot:
+                    if parcel.get_address() == address:
+                        addresses.append(parcel)
+        return addresses
+
 
     def search_deadline(self, deadline):
         """
@@ -76,11 +79,11 @@ class ParcelHash:
         """
         deadlines = []
         for slot in self.table:
-            for parcel in slot:
-                if parcel.get_delivery_deadline() == deadline:
-                    deadlines.append(parcel)
-                    return deadlines
-        return None
+            if slot is not None:
+                for parcel in slot:
+                    if parcel.get_delivery_deadline() == deadline:
+                        deadlines.append(parcel)
+        return deadlines
 
     def search_city(self, city):
         """
@@ -89,11 +92,11 @@ class ParcelHash:
         """
         cities = []
         for slot in self.table:
-            for parcel in slot:
-                if parcel.get_city() == city:
-                    cities.append(parcel)
-                    return cities
-        return None
+            if slot is not None:
+                for parcel in slot:
+                    if parcel.get_city() == city:
+                        cities.append(parcel)
+        return cities
 
     def search_zip(self, zip):
         """
@@ -102,11 +105,11 @@ class ParcelHash:
         """
         zips = []
         for slot in self.table:
-            for parcel in slot:
-                if parcel.get_zip() == zip:
-                    zips.append(parcel)
-                    return zips
-        return None
+            if slot is not None:
+                for parcel in slot:
+                    if parcel.get_zip() == zip:
+                        zips.append(parcel)
+        return zips
 
     def search_weight(self, weight):
         """
@@ -115,11 +118,12 @@ class ParcelHash:
         """
         weights = []
         for slot in self.table:
-            for parcel in slot:
-                if parcel.get_weight() == float(weight):
-                    weights.append(parcel)
-                    return weights
-        return None
+            if slot is not None:
+                for parcel in slot:
+                    if parcel.get_mass() == float(weight):
+                        weights.append(parcel)
+        return weights
+
 
     def search_delivery_status(self, status):
         """
@@ -128,11 +132,11 @@ class ParcelHash:
         """
         statuses = []
         for slot in self.table:
-            for parcel in slot:
-                if parcel.get_status() == status:
-                    statuses.append(parcel)
-                    return statuses
-        return None
+            if slot is not None:
+                for parcel in slot:
+                    if parcel.get_status() == status:
+                        statuses.append(parcel)
+        return statuses
 
     def update(self, key, status, time):
         """
@@ -149,10 +153,6 @@ class ParcelHash:
     def size(self):
         """Returns the number of parcels in the hash table"""
         return self.num_parcels
-
-    def is_empty(self):
-        """Returns True if the hash table is empty, False otherwise"""
-        return self.size() == 0
 
     def get_table(self):
         """Returns the list of lists representing the hash table"""
