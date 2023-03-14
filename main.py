@@ -14,6 +14,10 @@ def main():
     truck1 = Truck(1)
     truck2 = Truck(2)
 
+    # Create dictionary to hold historical truck data
+    historical_truck_data= {}
+    historical_parcel_data = {}
+
     # 1st Load Priority packages
     truck1.add_parcel(package_hash_table.search_id(15))
     truck1.add_parcel(package_hash_table.search_id(1))
@@ -58,8 +62,8 @@ def main():
     truck2.set_truck_parcels(two_opt_sort(truck2.get_truck_parcels(), truck2.get_truck_location()))
 
     # Deliver the 1st and 2nd load of packages
-    dl.deliver_parcels(package_hash_table, truck1)
-    dl.deliver_parcels(package_hash_table, truck2)
+    dl.deliver_parcels(package_hash_table, truck1, historical_truck_data, historical_parcel_data)
+    dl.deliver_parcels(package_hash_table, truck2, historical_truck_data, historical_parcel_data)
 
     # 3rd Load All non-priority packages
     truck2.add_parcel(package_hash_table.search_id(9))
@@ -74,20 +78,9 @@ def main():
     # Sort the packages using two-opt sort.
     truck2.set_truck_parcels(two_opt_sort(truck2.get_truck_parcels(), truck2.get_truck_location()))
     # Deliver the 3rd load of packages using truck 2
-    dl.deliver_parcels(package_hash_table, truck2)
+    dl.deliver_parcels(package_hash_table, truck2, historical_truck_data, historical_parcel_data)
 
-    # print("Total Distance: " + str(int(truck1.get_truck_distance() + truck2.get_truck_distance())) + " miles")
-    # print("------------------------------------")
-    # for bucket in package_hash_table.get_table():
-    #     if bucket is not None:
-    #         for parcel in bucket:
-    #             if parcel.get_status() == 'Delivered':
-    #                 print(str(parcel.get_package_id()) + " " + str(parcel.get_status()) + " " +
-    #                       str(tc.seconds_to_time(
-    #                           int(parcel.get_delivery_time()))) + " " + parcel.get_delivery_deadline())
-    #
-
-    cli(package_hash_table)
+    cli(historical_truck_data, historical_parcel_data)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,5 @@
+import copy
+
 class ParcelHash:
     """Hash Table Data Structure implemented using a list of lists to store parcels"""
     def __init__(self, initial_size=10, load_factor=0.75):
@@ -9,6 +11,15 @@ class ParcelHash:
         self.load_factor = load_factor
         self.num_parcels = 0
         self.table = [[] for _ in range(self.table_size)]
+
+    def __deepcopy__(self, memo):
+        """
+        Deep copy of the ParcelHash object
+        """
+        new_obj = ParcelHash(self.table_size, self.load_factor)
+        new_obj.num_parcels = self.num_parcels
+        new_obj.table = copy.deepcopy(self.table, memo)
+        return new_obj
 
     def hash_function(self, key, table_size):
         """
@@ -55,7 +66,7 @@ class ParcelHash:
             for parcel in slot:
                 if parcel.get_address() == address:
                     addresses.append(parcel)
-                    return addresses
+            return addresses
         return None
 
     def search_deadline(self, deadline):

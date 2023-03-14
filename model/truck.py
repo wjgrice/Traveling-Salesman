@@ -1,5 +1,5 @@
 from model.parcel import Parcel
-
+import copy
 
 class Truck:
     """Model of package delivery truck for a package delivery company."""
@@ -14,7 +14,7 @@ class Truck:
         self.parcels = []
         self.status = 'At the hub'
         self.time = 0
-        self.priority_slots = 8
+        self.total_parcels_delivered = 0
 
     def __str__(self):
         """Returns a string representation of the Truck object."""
@@ -46,10 +46,6 @@ class Truck:
         """Returns the truck location for the Truck object."""
         return self.location
 
-    def get_truck_distance(self) -> int:
-        """Returns the truck distance for the Truck object."""
-        return self.distance
-
     def get_truck_parcels(self) -> list:
         """Returns the truck parcels for the Truck object."""
         return self.parcels
@@ -61,6 +57,10 @@ class Truck:
     def set_truck_location(self, new_location: str):
         """Sets the truck location for the Truck object."""
         self.location = new_location
+
+    def get_truck_distance(self) -> int:
+        """Returns the truck distance for the Truck object."""
+        return self.distance
 
     def set_truck_distance(self, new_distance: int):
         """Sets the truck distance for the Truck object."""
@@ -88,6 +88,7 @@ class Truck:
 
     def deliver_parcel(self):
         """Removes the first parcel from the truck."""
+        self.total_parcels_delivered += 1
         return self.parcels.pop(0)
 
     def get_parcel_count(self) -> int:
@@ -102,10 +103,19 @@ class Truck:
         """Adds to the truck time for the Truck object. Counter represents seconds from 8:00 AM."""
         self.time += new_time
 
-    def get_truck_priority_slots(self) -> int:
-        """Returns the number of priority slots on the truck."""
-        return self.priority_slots
+    def get_total_parcels_delivered(self) -> int:
+        """Returns the total number of parcels delivered by the truck."""
+        return self.total_parcels_delivered
 
-    def set_truck_priority_slots(self, new_slots: int):
-        """Sets the number of priority slots on the truck."""
-        self.priority_slots = new_slots
+    def copy(self):
+        """Returns a copy of the Truck object."""
+        new_truck = Truck(self.id)
+        new_truck.capacity = self.capacity
+        new_truck.speed = self.speed
+        new_truck.location = self.location
+        new_truck.distance = self.distance
+        new_truck.parcels = copy.copy(self.parcels)
+        new_truck.status = self.status
+        new_truck.time = self.time
+        new_truck.total_parcels_delivered = self.total_parcels_delivered
+        return new_truck

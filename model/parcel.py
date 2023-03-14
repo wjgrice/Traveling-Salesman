@@ -34,6 +34,7 @@ class Parcel:
         self.status = 'At the hub'
         self.loading_time = -1
         self.delivery_time = -1
+        self.delivery_truck = -1
 
     def __str__(self):
         """Returns a string representation of the Parcel object."""
@@ -98,26 +99,14 @@ class Parcel:
         """Sets the delivery time for the Parcel object to the given delivery time."""
         self.delivery_time = delivery_time
 
-    def get_truck_id(self) -> int:
+    def get_delivery_truck(self) -> int:
         """Returns the truck ID for the Parcel object."""
-        return self.truck_id
+        return self.delivery_truck
 
-    def set_truck_id(self, truck_id: int) -> None:
+    def set_delivery_truck(self, truck_id: int) -> None:
         """Sets the truck ID for the Parcel object to the given truck ID."""
-        self.truck_id = truck_id
+        self.delivery_truck = truck_id
 
-    def get_group(self) -> list:
-        """Returns the group for the Parcel object."""
-        return self.group
 
-    def set_group(self, group: list) -> None:
-        """Sets the group for the Parcel object to the given group."""
-        self.group = group
 
-    def get_priority(self) -> str:
-        """Returns the priority for the Parcel object."""
-        return self.priority
 
-    def set_priority(self, priority: str) -> None:
-        """Sets the priority for the Parcel object to the given priority."""
-        self.priority = priority

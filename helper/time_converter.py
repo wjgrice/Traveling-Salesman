@@ -25,3 +25,4 @@ def seconds_to_time(seconds: int) -> str:
     hours = seconds // 3600  # 3600 seconds in an hour
     minutes = (seconds % 3600) // 60  # 60 minutes in an hour
     return "{:02d}:{:02d}".format(hours + 8, minutes)
+

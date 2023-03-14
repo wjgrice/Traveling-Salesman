@@ -1,7 +1,9 @@
+import copy
+
 from helper import data_handler as dh
 
 
-def deliver_parcels(hash_table, truck):
+def deliver_parcels(hash_table, truck, historical_truck_data, historical_parcel_data):
     """Delivers the packages on the truck."""
     for parcel in truck.get_truck_parcels():
         hash_table.search_id(parcel.get_package_id()).set_status('En Route')
@@ -18,7 +20,7 @@ def deliver_parcels(hash_table, truck):
         delivered_parcel = truck.deliver_parcel();
         # Get the distance it took to deliver the parcel
         distance = distances[truck.get_truck_location()][delivered_parcel.get_address()]
-        # Calculate the time it took to deliver the parcel
+        # Calculate the time of delivery
         time_to_deliver = distance * seconds_per_mile
         # Update the truck time
         truck.add_truck_time(time_to_deliver)
@@ -28,6 +30,10 @@ def deliver_parcels(hash_table, truck):
         truck.set_truck_location(delivered_parcel.get_address())
         # Update the package status
         hash_table.update(delivered_parcel.get_package_id(), 'Delivered', truck.get_truck_time())
+        # Add this delivery to the historical data
+        historical_truck_data[truck.get_truck_time()] = truck.copy()
+        historical_parcel_data[truck.get_truck_time()] = copy.deepcopy(hash_table)
+
     # Send truck back to the hub if there are more deliveries
     more_deliveries = False
     for bucket in hash_table.get_table():
