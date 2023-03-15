@@ -13,8 +13,8 @@ def create_adj_matrix_from_csv(csv_file):
     Returns:
         dict: A dictionary of dictionaries representing the adjacency matrix.
 
-    Complexity:
-        O(n^2) where n is the number of nodes in the graph.
+    Time complexity: O(n^2) where n is the number of nodes in the graph.
+    Space complexity: O(n^2) where n is the number of nodes in the graph.
     """
     # Open the CSV file
     with open(csv_file, newline='') as csvfile:
@@ -70,7 +70,10 @@ def create_parcel_hash_from_csv(file_path):
         file_path (str): Path to the input CSV file
 
     Returns:
-        ParcelHash: A hashtable object of Parcel objects
+        ParcelHash: A hashtable object of Parcel objects.
+
+    Time complexity: O(n), where n is the number of parcels in the CSV file.
+    Space complexity: O(n), where n is the number of parcels in the CSV file.
     """
     # Initialize an empty hash table of parcels
     parcel_hash = ParcelHash()

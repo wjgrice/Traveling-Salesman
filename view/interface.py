@@ -10,11 +10,9 @@ def cli(historical_truck_data, historical_parcel_data):
     Provides an interface for the user to view the status and info of any package at any time, and the total mileage
     traveled by all trucks.
 
-    :param historical_truck_data:
-    :param historical_parcel_data:
-    :param hash_table:
-    :param truck1:
-    :param truck2:
+    Args:
+        historical_truck_data (dict): A dictionary with timestamps as keys and Truck objects as values
+        historical_parcel_data (dict): A dictionary with timestamps as keys and ParcelHash objects as values
     """
 
     # Set clock to last delivery time
@@ -35,6 +33,7 @@ def cli(historical_truck_data, historical_parcel_data):
     # Create a fresh hash from before any deliveries take place and add it to the historical data to cover edge cases
     historical_parcel_data[-31536000] = dh.create_parcel_hash_from_csv('data/WGUPS Package File.csv')
 
+    # CLI loop
     while True:
         # Find the newest key just below current time value
         latest_truck1_key = find_key(truck1_data, current_time)
@@ -50,6 +49,7 @@ def cli(historical_truck_data, historical_parcel_data):
         # Get the hash table at the latest time before current time
         hash_table = historical_parcel_data[latest_hash_table_key]
 
+        # Display the CLI menu
         print("\n\nWGU Package Management System")
         print("--------------------------------")
         print("Total Number of Packages Delivered: " + str(
@@ -67,11 +67,13 @@ def cli(historical_truck_data, historical_parcel_data):
         print("7. Search for a package by Weight")
         print("8. Search for a package by Status")
         print("9. Search for all packages")
-        print("10. Exit")
+        print("10. Show list of late packages")
+        print("11. Exit")
 
+        # Handle user input
         choice = input("Enter a command (1-9): ")
         if choice == "1":
-            new_time = input("Enter new time (24h) HH:MM:  ")
+            new_time = input("Enter new time (24h) HH:MM  ")
             current_time = tc.timestamp_to_seconds(new_time)
             os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -167,20 +169,89 @@ def cli(historical_truck_data, historical_parcel_data):
             input("Press enter to continue...")
             os.system('cls' if os.name == 'nt' else 'clear')
         if choice == "10":
+            print("\nLate packages:")
+            hash_table = set_late_status(hash_table)
+            lates = []
+            for slot in hash_table.get_table():
+                if slot is not None:
+                    for p in slot:
+                        if p.get_status() == "Late":
+                            lates.append(p)
+            if len(lates) == 0:
+                print("None")
+            else:
+                for p in lates:
+                    print(p)
+            input("Press enter to continue...")
+            os.system('cls' if os.name == 'nt' else 'clear')
+        if choice == "11":
             break
 
+
+def set_late_status(hash_table):
+    """
+    Sets the status of a package to late if it is late.
+
+    Args:
+        hash_table (ParcelHash): The hash table containing the parcel data
+
+    Returns:
+        ParcelHash: The updated hash table with the late status set for the packages
+
+    Complexity Analysis:
+        Time Complexity: O(n), where n is the number of packages in the hash table.
+                         We iterate through all the packages in the hash table once.
+        Space Complexity: O(1), we do not use any additional data structures or memory.
+    """
+    # Iterate through all the slots in the hash table
+    for slot in hash_table.get_table():
+        # Check if the slot is not empty
+        if slot is not None:
+            # Iterate through all the packages in the slot
+            for p in slot:
+                # Check if the package has a delivery deadline of EOD (end of day)
+                if p.get_delivery_deadline() == "EOD":
+                    continue
+                else:
+                    # Convert the delivery deadline and delivery time to seconds
+                    deadline = tc.timestamp_to_seconds(p.get_delivery_deadline())
+                    delivery_time = p.get_delivery_time()
+
+                    # Check if the delivery time is later than the deadline
+                    if deadline < delivery_time:
+                        # Set the status of the package to late
+                        p.set_status("Late")
+
+    # Return the updated hash table
+    return hash_table
 
 
 def find_key(truck_data, current_time):
     """
     Finds the key of the truck data that are just below the current time. Return None if no keys are found.
 
-    :param truck_data:
-    :param current_time:
-    :return:
+    Args:
+        truck_data (dict): The dictionary containing the truck data with keys representing timestamps.
+        current_time (float): The current time in seconds.
+
+    Returns:
+        float or None: The key (timestamp) of the truck data just below the current time, or None if no keys are found.
+
+    Complexity Analysis:
+        Time Complexity: O(n), where n is the number of items in the truck_data dictionary.
+                         We filter the truck_data once and then find the maximum key.
+        Space Complexity: O(n), where n is the number of items in the truck_data dictionary.
+                          We create a new filtered_data dictionary which can have at most n items.
     """
+    # Filter the truck_data dictionary to include only items with keys (timestamps) less than or equal to current_time
     filtered_data = {k: v for k, v in truck_data.items() if k <= current_time}
+
+    # Check if there are no keys found in filtered_data
     if not filtered_data:
         return None
+
+    # Find the maximum key (timestamp) in the filtered_data dictionary
     truck_key = max(filtered_data.keys())
+
+    # Return the truck_key
     return truck_key
