@@ -14,14 +14,14 @@ def two_opt_sort(parcel_list, start_address):
     Returns:
         list: The sorted list of parcels.
 
-    Time complexity: O(n^2), where n is the number of parcels.
+    Time complexity: O(n^3), where n is the number of parcels.
     Space complexity: O(n), where n is the number of parcels.
     """
     # Create the distance hash table
     distances_table = dh.create_adj_matrix_from_csv('data/WGUPS Distance Table.csv')
 
     # Run the nearest neighbor algorithm to get an initial route
-    initial_route = nearest_neighbor_sort(parcel_list, start_address)
+    initial_route = nearest_neighbor_sort(parcel_list, start_address, distances_table)
 
     # Run the 2-opt algorithm to improve the route
     improved_route = two_opt(initial_route, distances_table)
@@ -36,13 +36,13 @@ def two_opt(route, distances):
 
     Args:
         route (list): The route to be improved.
-        distances (dict): A matrix of distances between the cities.
+        distances (dict): A matrix of distances between the locations.
 
     Returns:
         list: The improved route.
 
-    Time complexity: O(n^2), where n is the number of cities in the route.
-    Space complexity: O(n), where n is the number of cities in the route.
+    Time complexity: O(n^2), where n is the number of locations in the route.
+    Space complexity: O(n), where n is the number of locations in the route.
     """
     n = len(route)
 
@@ -54,7 +54,7 @@ def two_opt(route, distances):
         for i in range(1, n - 2):
             for j in range(i + 1, n):
                 if j - i == 1:
-                    continue  # Skip consecutive cities
+                    continue  # Skip consecutive locations
 
                 # Create a new route by reversing the addresses between i and j
                 new_route = route[:]
@@ -81,32 +81,32 @@ def route_distance(route, distances):
 
     Args:
         route (list): The route to calculate the distance of.
-        distances (dict): A matrix of distances between the cities.
+        distances (dict): A matrix of distances between the locations.
 
     Returns:
         float: The total distance of the route.
 
-    Time complexity: O(n), where n is the number of cities in the route.
+    Time complexity: O(n), where n is the number of locations in the route.
     Space complexity: O(1).
     """
     total_distance = 0
 
-    # Loop through the route and calculate the distance between consecutive cities
+    # Loop through the route and calculate the distance between consecutive addresses.
     for i in range(len(route) - 1):
         start_address = route[i].get_address()
         end_address = route[i + 1].get_address()
 
-        # Check if the distances between the two cities are available in the distance matrix
+        # Check if the distances between the two locations are available in the distance matrix
         if start_address in distances and end_address in distances[start_address]:
             total_distance += distances[start_address][end_address]
         else:
             print(f"Missing distance between addresses {start_address} and {end_address}")
 
-    # Calculate the distance between the last city in the route and the first city to complete the loop
+    # Calculate the distance between the last location in the route and the first location to complete the loop
     start_address = route[-1].get_address()
     end_address = route[0].get_address()
 
-    # Check if the distances between the last and first cities are available in the distance matrix
+    # Check if the distances between the last and first addresses are available in the distance matrix
     if start_address in distances and end_address in distances[start_address]:
         total_distance += distances[start_address][end_address]
     else:
@@ -115,7 +115,7 @@ def route_distance(route, distances):
     return total_distance
 
 
-def nearest_neighbor_sort(parcel_list, start_address):
+def nearest_neighbor_sort(parcel_list, start_address, distances_table):
     """
     Sorts a list of parcels by nearest neighbor. Starting at the hub, the nearest neighbor is found and added to
     the list.
@@ -123,6 +123,7 @@ def nearest_neighbor_sort(parcel_list, start_address):
     Args:
         parcel_list (list): A list of parcels.
         start_address (str): The starting address.
+        distances_table (dict): A matrix of distances between the addresses.
 
     Returns:
         list: The sorted list of parcels.
@@ -133,7 +134,6 @@ def nearest_neighbor_sort(parcel_list, start_address):
     current_location = start_address
     # Create the distance hash table
     distance_to_nearest = 99999999999999999
-    distances_table = dh.create_adj_matrix_from_csv('data/WGUPS Distance Table.csv')
     # Create empty sorted list and nearest neighbor object
     nearest_neighbor = None
     sorted_parcel_list = []

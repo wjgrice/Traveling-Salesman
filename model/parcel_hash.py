@@ -78,6 +78,27 @@ class ParcelHash:
         if self.num_parcels / self.table_size > self.load_factor:
             self._resize()
 
+    def remove(self, key):
+        """
+        Removes the parcel with the given key (package ID) from the hash table.
+        If the parcel is found, the function returns it. Otherwise, it returns None.
+
+        Args:
+            key (int): The package ID of the parcel to be removed.
+
+        Returns:
+            Parcel: The parcel object if found, otherwise None.
+
+        Time complexity: O(1) average case, O(n) worst case, where n is the number of parcels in the hash table.
+        """
+        slot = self.hash_function(key, self.table_size)
+        for parcel in self.table[slot]:
+            if parcel.get_package_id() == key:
+                self.table[slot].remove(parcel)
+                self.num_parcels -= 1
+                return parcel
+        return None
+
     def search_id(self, key):
         """
         Searches for the parcel with the given key (package ID) in the hash table.

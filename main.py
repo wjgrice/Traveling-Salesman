@@ -1,8 +1,8 @@
-# William Grice - Student ID: 010431182
+# William Grice - Student ID: 10431182
 import helper.data_handler as dh
-import helper.delivery as dl
+import controller.delivery as dl
 from model.truck import Truck
-from helper.route_optimizer import two_opt_sort
+from controller.route_optimizer import two_opt_sort
 from view.interface import cli
 
 
