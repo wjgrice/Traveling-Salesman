@@ -62,10 +62,22 @@ class Parcel:
         Time complexity: O(1)
         Space complexity: O(1)
         """
+        load_time_str = ""
+        if self.loading_time == -1:
+            load_time_str = ' NA'
+        else:
+            load_time_str = str(tc.seconds_to_time(int(self.loading_time)))
+
+        delivery_time_str = ""
+        if self.delivery_time == -1:
+            delivery_time_str = ' NA'
+        else:
+            delivery_time_str = str(tc.seconds_to_time(int(self.delivery_time)))
+
         return f'Package ID:{self.package_id} / Address:{self.address}, {self.city}, {self.state}, ' \
                f' {self.zip_code} / Weight:{self.mass} / Notes:{self.notes} / ' \
-               f'Status:{self.status} / Loading Time:{tc.seconds_to_time(int(self.loading_time))} / ' \
-               f' Delivery Time:{tc.seconds_to_time(int(self.delivery_time))}  / Deadline:{self.delivery_deadline} '
+               f'Status:{self.status} / Loading Time:{load_time_str} / ' \
+               f' Delivery Time:{delivery_time_str}  / Deadline:{self.delivery_deadline} '
 
     def get_package_id(self) -> int:
         """Gets the package ID for the Parcel object.
