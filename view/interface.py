@@ -49,11 +49,19 @@ def cli(historical_truck_data, historical_parcel_data):
         # Get the hash table at the latest time before current time
         hash_table = historical_parcel_data[latest_hash_table_key]
 
+        # Find total number of packages delivered
+        total_parcels_delivered = 0
+        for bucket in hash_table.get_table():
+            if bucket is not None:
+                for parcel in bucket:
+                    if parcel.get_status() == 'Delivered':
+                        total_parcels_delivered += 1
+
+
         # Display the CLI menu
         print("\n\nWGU Package Management System")
         print("--------------------------------")
-        print("Total Number of Packages Delivered: " + str(
-            truck1.get_total_parcels_delivered() + truck2.get_total_parcels_delivered()))
+        print("Total Number of Packages Delivered: " + str(total_parcels_delivered))
         print("Total Distance: " + str(int(truck1.get_truck_distance() + truck2.get_truck_distance())) + " miles")
         print("Current Time: " + str(tc.seconds_to_time(int(current_time))))
         print("--------------------------------\n")
