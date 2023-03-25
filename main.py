@@ -42,37 +42,41 @@ def main():
 
     # 1st Load Priority packages
     truck1.add_parcel(package_hash_table.search_id(15))
-    truck1.add_parcel(package_hash_table.search_id(7))
-    truck1.add_parcel(package_hash_table.search_id(23))
     truck1.add_parcel(package_hash_table.search_id(14))
     truck1.add_parcel(package_hash_table.search_id(16))
     truck1.add_parcel(package_hash_table.search_id(20))
-    truck2.add_parcel(package_hash_table.search_id(38))
     truck1.add_parcel(package_hash_table.search_id(29))
-    truck1.add_parcel(package_hash_table.search_id(4))
     truck1.add_parcel(package_hash_table.search_id(31))
     truck1.add_parcel(package_hash_table.search_id(34))
     truck1.add_parcel(package_hash_table.search_id(37))
     truck1.add_parcel(package_hash_table.search_id(40))
+    truck1.add_parcel(package_hash_table.search_id(30))
     # 1st Load Non-priority packages
     truck1.add_parcel(package_hash_table.search_id(19))
     truck1.add_parcel(package_hash_table.search_id(13))
-    truck1.add_parcel(package_hash_table.search_id(5))
+
 
     # Sort and deliver the packages using two-opt sort for the 1st load
     truck1.set_truck_parcels(two_opt_sort(truck1.get_truck_parcels(), truck1.get_truck_location()))
-    dl.deliver_parcels(package_hash_table, truck1, historical_truck_data, historical_parcel_data)
+    package_hash_table, truck1, historical_truck_data, historical_parcel_data = dl.deliver_parcels(package_hash_table,
+                                                                                                   truck1,
+                                                                                                   historical_truck_data,
+                                                                                                   historical_parcel_data)
 
     # 2nd Load Priority packages
-    truck2.add_truck_time(65 * 60)  # 9:05 AM
+    truck2.add_truck_time(80 * 60)  # 9:05 AM
     truck2.add_parcel(package_hash_table.search_id(6))
     truck2.add_parcel(package_hash_table.search_id(25))
-    truck2.add_parcel(package_hash_table.search_id(30))
     truck2.add_parcel(package_hash_table.search_id(1))
+
+
 
     # Sort and delivery 2nd load priority packages
     truck2.set_truck_parcels(two_opt_sort(truck2.get_truck_parcels(), truck2.get_truck_location()))
-    dl.deliver_parcels(package_hash_table, truck2, historical_truck_data, historical_parcel_data)
+    package_hash_table, truck2, historical_truck_data, historical_parcel_data = dl.deliver_parcels(package_hash_table,
+                                                                                                   truck2,
+                                                                                                   historical_truck_data,
+                                                                                                   historical_parcel_data)
 
     # 3rd Load Non-priority packages
     truck2.add_parcel(package_hash_table.search_id(24))
@@ -87,10 +91,15 @@ def main():
     truck2.add_parcel(package_hash_table.search_id(17))
     truck2.add_parcel(package_hash_table.search_id(21))
     truck2.add_parcel(package_hash_table.search_id(22))
+    truck2.add_parcel(package_hash_table.search_id(7))
+    truck2.add_parcel(package_hash_table.search_id(23))
 
     # Sort and delivery 3rd load non-priority packages
     truck2.set_truck_parcels(two_opt_sort(truck2.get_truck_parcels(), truck2.get_truck_location()))
-    dl.deliver_parcels(package_hash_table, truck2, historical_truck_data, historical_parcel_data)
+    package_hash_table, truck2, historical_truck_data, historical_parcel_data = dl.deliver_parcels(package_hash_table,
+                                                                                                   truck2,
+                                                                                                   historical_truck_data,
+                                                                                                   historical_parcel_data)
 
     # 4th Load All non-priority packages
     truck2.add_parcel(package_hash_table.search_id(9))
@@ -101,10 +110,16 @@ def main():
     truck2.add_parcel(package_hash_table.search_id(33))
     truck2.add_parcel(package_hash_table.search_id(35))
     truck2.add_parcel(package_hash_table.search_id(39))
+    truck2.add_parcel(package_hash_table.search_id(38))
+    truck2.add_parcel(package_hash_table.search_id(4))
+    truck2.add_parcel(package_hash_table.search_id(5))
 
     # Sort and delivery 4th load non-priority packages
     truck2.set_truck_parcels(two_opt_sort(truck2.get_truck_parcels(), truck2.get_truck_location()))
-    dl.deliver_parcels(package_hash_table, truck2, historical_truck_data, historical_parcel_data)
+    package_hash_table, truck2, historical_truck_data, historical_parcel_data = dl.deliver_parcels(package_hash_table,
+                                                                                                   truck2,
+                                                                                                   historical_truck_data,
+                                                                                                   historical_parcel_data)
 
     cli(historical_truck_data, historical_parcel_data)
 

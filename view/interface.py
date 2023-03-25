@@ -57,7 +57,6 @@ def cli(historical_truck_data, historical_parcel_data):
                     if parcel.get_status() == 'Delivered':
                         total_parcels_delivered += 1
 
-
         # Display the CLI menu
         print("\n\nWGU Package Management System")
         print("--------------------------------")
@@ -76,7 +75,8 @@ def cli(historical_truck_data, historical_parcel_data):
         print("8. Search for a package by Status")
         print("9. Search for all packages")
         print("10. Show list of late packages")
-        print("11. Exit")
+        print("11. Display Error Log")
+        print("12. Exit")
 
         # Handle user input
         choice = input("Enter a command (1-9): ")
@@ -170,6 +170,7 @@ def cli(historical_truck_data, historical_parcel_data):
                 print("Package not found.")
         if choice == "9":
             print("\nPackages found:")
+            print("Current Time: " + str(tc.seconds_to_time(int(current_time))))
             for slot in hash_table.get_table():
                 if slot is not None:
                     for p in slot:
@@ -193,7 +194,39 @@ def cli(historical_truck_data, historical_parcel_data):
             input("Press enter to continue...")
             os.system('cls' if os.name == 'nt' else 'clear')
         if choice == "11":
+            print("\nDelivery Errors found:")
+            check_errors(historical_parcel_data, historical_truck_data)
+            input("\nPress enter to continue...")
+            os.system('cls' if os.name == 'nt' else 'clear')
+        if choice == "12":
             break
+
+
+"""
+Checks for errors in the delivery of packages and prints them to the console any that are delivered after the current time
+which would violate the rules of the simulation.
+"""
+
+
+def check_errors(historical_parcel_data, historical_truck_data):
+    current_time = 0
+    error_log = {}
+    while current_time <= max(historical_truck_data.keys()):
+        # Find the newest key just below current time value
+        latest_hash_table_key = find_key(historical_parcel_data, current_time)
+
+        # Get the hash table at the latest time before current time
+        hash_table = historical_parcel_data[latest_hash_table_key]
+        for slot in hash_table.get_table():
+            if slot is not None:
+                for p in slot:
+                    if p.get_status() == "Delivered" and p.get_delivery_time() > current_time:
+                        # Add to dictionary of errors
+                        error_log[current_time] = p
+
+        current_time += 60
+    for k in error_log.keys():
+        print("Delivered Before Current Time " + str(tc.seconds_to_time(k)) + ": " + str(error_log[k]))
 
 
 def set_late_status(hash_table):

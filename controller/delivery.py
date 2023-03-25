@@ -1,5 +1,6 @@
 import copy
 from helper import data_handler as dh
+from helper import time_converter as tc
 
 
 def deliver_parcels(hash_table, truck, historical_truck_data, historical_parcel_data):
@@ -63,4 +64,4 @@ def deliver_parcels(hash_table, truck, historical_truck_data, historical_parcel_
         truck.add_truck_distance(distance)
         truck.set_truck_location('4001 S 700 E')
 
-    return hash_table, truck
+    return hash_table, truck, historical_truck_data, historical_parcel_data
